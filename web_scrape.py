@@ -40,7 +40,8 @@ def parseSite(soup):
     # Get location path
     defaultLoc = input("Use default location? (y/n)").lower()
     if (defaultLoc == "y"):
-        location = ""
+        config.read('settings.ini')
+        location = config["Location"]["defaultPath"]
     else:
         location = filedialog.askdirectory()
 
@@ -75,14 +76,20 @@ def parseSite(soup):
     print("File saved")
 
 def settings():
-    options = " 1. Set default folder \n 2. Reset settings \n 3. Back "
+    options = "\n 1. Set default folder \n 2. Reset settings \n 3. Back "
     choice = int(input(f"{options}\n > "))
 
+    # Get user input for directory
     if choice == 1:
-        
+        config['Location'] = {'defaultPath':f'{filedialog.askdirectory()}'}
+        with open('settings.ini', 'w') as configfile:
+            config.write(configfile)
         wait()
+    # Set defaultPath to HOME directory
     elif choice == 2:
-        
+        config['Location'] = {'defaultPath':f'{os.path.join(os.path.expanduser("~"), "Documents")}'}
+        with open('settings.ini', 'w') as configfile:
+            config.write(configfile)
         wait()
     elif choice == 3:
         return
