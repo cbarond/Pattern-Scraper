@@ -4,6 +4,7 @@ import docx
 import os
 import configparser
 import msvcrt
+import sys
 
 import tkinter as tk
 from tkinter import filedialog
@@ -38,7 +39,7 @@ def parseSite(soup):
     doc = docx.Document()
 
     # Get location path
-    defaultLoc = input("Use default location? (y/n)").lower()
+    defaultLoc = input("Use default location? (y/n) > ").lower()
     if (defaultLoc == "y"):
         config.read('settings.ini')
         location = config["Location"]["defaultPath"]
@@ -84,18 +85,18 @@ def settings():
         config['Location'] = {'defaultPath':f'{filedialog.askdirectory()}'}
         with open('settings.ini', 'w') as configfile:
             config.write(configfile)
-        wait()
+
     # Set defaultPath to HOME directory
     elif choice == 2:
         config['Location'] = {'defaultPath':f'{os.path.join(os.path.expanduser("~"), "Documents")}'}
         with open('settings.ini', 'w') as configfile:
             config.write(configfile)
-        wait()
+
     elif choice == 3:
         return
     else:
         print("Invalid option")
-        wait()
+
 
 def wait():
     print("Press Enter...")
@@ -104,7 +105,8 @@ def wait():
 def menu():
     exit = False
     while not exit:
-        os.system('cls')
+        #os.system('cls')
+        sys.stderr.write("\x1b[2J\x1b[H") # Clear screen but leave scrollback
         options = " 1. Scrape a website \n 2. Settings \n 3. Exit "
         choice = int(input(f"{options}\n > "))
 
