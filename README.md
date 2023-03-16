@@ -1,2 +1,2 @@
 # Pattern-Scraper
- A script to extract text from a pattern/recipe without images.
+ A script to extract text from a pattern/recipe without images into a Word document.

@@ -1,14 +1,17 @@
 import requests
 from bs4 import BeautifulSoup
 import docx
+import os
+import configparser
+import msvcrt
 
 import tkinter as tk
 from tkinter import filedialog
 
 root = tk.Tk()
 root.withdraw()
-#folder_selected = filedialog.askdirectory()
 
+config = configparser.ConfigParser()
 
 def status(status):
     if (str(status)[0] == "2"):
@@ -34,15 +37,30 @@ def getSite():
 def parseSite(soup):
     doc = docx.Document()
 
+    # Get location path
+    defaultLoc = input("Use default location? (y/n)").lower()
+    if (defaultLoc == "y"):
+        location = ""
+    else:
+        location = filedialog.askdirectory()
+
+    # Compile full file path
+    fileName = input("File name: ")
+    path = os.path.join(location, f"{fileName}.docx")
+
+
     header = soup.find_all("header", class_="entry-header")
     content = soup.find_all("div", class_="entry-content")
     # for items in content:
     #     data = '\n'.join([item.text for item in items.find_all(["h2","p"])])
     #     print(data)
+
+    # Extract main title
     for items in header:
         for item in items.find_all(["h1"]):
             doc.add_heading(item.text, 0)
 
+    # Extract text and headings
     for sections in content:
         for item in sections.find_all(["h2","p", "ul"]):
             if (item.name == "h2"):
@@ -53,8 +71,49 @@ def parseSite(soup):
                 for list in item.find_all(["li"]):
                     doc.add_paragraph(f"- {list.text}")
 
-    doc.save('pattern.docx')
+    doc.save(path)
+    print("File saved")
+
+def settings():
+    options = " 1. Set default folder \n 2. Reset settings \n 3. Back "
+    choice = int(input(f"{options}\n > "))
+
+    if choice == 1:
+        
+        wait()
+    elif choice == 2:
+        
+        wait()
+    elif choice == 3:
+        return
+    else:
+        print("Invalid option")
+        wait()
+
+def wait():
+    print("Press Enter...")
+    msvcrt.getch()
+
+def menu():
+    exit = False
+    while not exit:
+        os.system('cls')
+        options = " 1. Scrape a website \n 2. Settings \n 3. Exit "
+        choice = int(input(f"{options}\n > "))
+
+        if choice == 1:
+            soup = getSite()
+            parseSite(soup)
+            wait()
+        elif choice == 2:
+            settings()
+            wait()
+        elif choice == 3:
+            break
+        else:
+            print("Invalid option")
+            wait()
+            
 
 if __name__ == '__main__':
-    soup = getSite()
-    parseSite(soup)
+    menu()
