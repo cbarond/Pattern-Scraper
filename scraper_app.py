@@ -204,9 +204,12 @@ class Info(Static):
             scraper = Scrape()
             print(self.url)
             site = scraper.getSite(self.url)
-            self.query_one("#doc-title").update(f"{site[0].title.text}")
-            scraper.parseSite(site[0], site[1], self.doc_name, self.dest) if site != 1 else 0
-            self.notify("Website scraped and saved.", timeout=10)
+            if site != 1:
+                self.query_one("#doc-title").update(f"{site[0].title.text}")
+                scraper.parseSite(site[0], site[1], self.doc_name, self.dest) if site != 1 else 0
+                self.notify("Website scraped and saved.", timeout=10)
+            else:
+                self.notify("Try again.",severity="warning", timeout=10)
 
     def compose(self) -> ComposeResult:
         """Create child widgets of Info widget"""

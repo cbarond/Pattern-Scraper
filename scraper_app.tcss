@@ -7,8 +7,19 @@ Screen {
 
 Toast {
     padding: 2;
-    border: white;
+    width: 30%;
 }
+
+Toast.-information {
+    tint: $success 20%;
+}
+Toast.-warning {
+    tint: $warning 20%;
+}
+Toast.-error {
+    tint: $error 20%;
+}
+
 
 /* Input section */
 Input_Site {
