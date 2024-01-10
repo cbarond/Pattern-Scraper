@@ -1,0 +1,100 @@
+Screen {
+    layout: vertical;
+    grid-size: 2 2;
+    grid-columns: 1fr 1fr;
+    grid-rows: 1fr 2fr;
+}
+
+/* Input section */
+Input_Site {
+    layout: grid;
+    grid-size: 2 2;
+    grid-columns: 1fr 2fr;
+    content-align: center middle;
+    margin: 1;
+    height: 10;
+}
+
+#input-site {
+    column-span: 2;
+}
+
+#label1 {
+    text-align: center;
+    content-align: center middle;
+    padding: 1;
+}
+
+/* Info Section */
+Info {
+    layout: grid;
+    grid-size: 3 4;
+    grid-columns: 1fr 2fr;
+    margin: 0;
+    padding: 1;
+    border: double violet;
+}
+
+#scrape {
+    row-span: 3;
+    width: 1fr;
+    height: 9;
+    background: green 0%;
+    border: $success round;
+}
+
+#doc-title {
+    column-span: 3;
+}
+
+Label {
+    padding: 1;
+}
+
+/* Settings section */
+Settings {
+    layout: grid;
+    grid-size: 2 1;
+    margin: 1;
+    padding: 0;
+    height: 1fr;
+    min-width: 100;
+}
+
+#settings {
+    margin: 1;
+    padding: 1;
+    content-align: center middle;
+}
+
+#set-dest {
+    min-width: 20;
+    margin: 2;
+    background: black 0%;
+    border: green round;
+}
+
+#use-default {
+    min-width: 20;
+    margin: 2;
+    background: black 0%;
+    border: green round;
+}
+
+#set-default {
+    min-width: 20;
+    margin: 2;
+    background: black 0%;
+    border: yellow round;
+}
+
+#reset-default {
+    min-width: 20;
+    margin: 2;
+    background: black 0%;
+    border: $warning round;
+}
+
+#directorySelect {
+    row-span: 1;
+}
