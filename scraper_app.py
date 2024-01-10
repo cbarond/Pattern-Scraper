@@ -201,15 +201,18 @@ class Info(Static):
         button_id = event.button.id
         self.query(Label)[0].focus()
         if button_id == "scrape":
-            scraper = Scrape()
-            print(self.url)
-            site = scraper.getSite(self.url)
-            if site != 1:
-                self.query_one("#doc-title").update(f"{site[0].title.text}")
-                scraper.parseSite(site[0], site[1], self.doc_name, self.dest) if site != 1 else 0
-                self.notify("Website scraped and saved.", timeout=10)
+            if self.url == "" or self.doc_name == "" or self.dest == "":
+                self.notify("Check the inputs and try again.", severity="warning", timeout=10)
             else:
-                self.notify("Try again.",severity="warning", timeout=10)
+                scraper = Scrape()
+                print(self.url)
+                site = scraper.getSite(self.url)
+                if site != 1:
+                    self.query_one("#doc-title").update(f"{site[0].title.text}")
+                    scraper.parseSite(site[0], site[1], self.doc_name, self.dest) if site != 1 else 0
+                    self.notify("Website scraped and saved.", timeout=10)
+                else:
+                    self.notify("Try again.", severity="warning", timeout=10)
 
     def compose(self) -> ComposeResult:
         """Create child widgets of Info widget"""
