@@ -7,15 +7,16 @@ from textual.app import App, ComposeResult
 from textual.containers import Vertical
 from textual.message import Message
 from textual.reactive import reactive
-from textual.widgets import Header, Footer, Button, Static, DirectoryTree, Input, Label, RichLog
+from textual.widgets import Header, Footer, Button, Static, DirectoryTree, Input, Label
 
 config = configparser.ConfigParser()
 
-#TODO: Add doc statements
 
 class Scrape:
+    """Contains functions for scraping websites"""
 
     def status(self, status):
+        """(Not currently used) Helper function to print staus codes"""
         if (str(status)[0] == "2"):
             print(f"Status: {status}")
         elif (str(status)[0] == "4"):
@@ -68,6 +69,7 @@ class Scrape:
         return hyperlink
 
     def getSite(self, url):
+        """Function to scrape a website"""
         url = url
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         try:
@@ -89,6 +91,7 @@ class Scrape:
             return 1
 
     def parseSite(self, soup, url, doc_name, dest):
+        """Function to parse a website and load it into a document"""
         doc = docx.Document()
 
         # Get location path
@@ -129,6 +132,7 @@ class Scrape:
         print("File saved")
 
 class DirectoryTreeSelect(Static):
+    """Class to handle loading of directory tree"""
     def compose(self) -> ComposeResult:
         home = os.path.expanduser("~")
         yield DirectoryTree(home)
@@ -150,6 +154,7 @@ class Input_Site(Static):
     doc_name = reactive("")
 
     def on_input_submitted(self, event=Input.Submitted) -> None:
+        """"Event handler called when an input is submitted"""
         input_id = event.input.id
         if input_id == "url":
             self.url = event.value
@@ -160,12 +165,12 @@ class Input_Site(Static):
         #self.query_one(RichLog).write(event.value)
 
     def compose(self) -> ComposeResult:
+        """Create child widgets of Input widget"""
         #yield Button("Set", id="set", variant="success")
-        yield Label(id="label1")
+        yield Label("Url: ", id="label1")
         yield Input(placeholder="Site url", id="url")
-        yield Label(id="label2")
+        yield Label("Document Name: ", id="label2")
         yield Input(placeholder="Document Name", id="doc-name")
-        #yield RichLog()
         
 class Info(Static):
     """Where information is displayed"""
@@ -180,25 +185,31 @@ class Info(Static):
         pass
     
     def pass_update(self, new_url, new_doc_name) -> None:
+        """Called to move url and doc_name from Input to Info"""
         self.url = new_url
         self.doc_name = new_doc_name
         self.query_one("#url-bar").update(f"{new_url}")
         self.query_one("#doc-name-bar").update(f"{new_doc_name}")
 
     def pass_dest(self, new_dest) -> None:
+        """Called to move destination from Settings to Info"""
         self.dest = new_dest
         self.query_one("#dest-bar").update(f"{new_dest}")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """"Event handler called when a button is pressed"""
         button_id = event.button.id
+        self.query(Label)[0].focus()
         if button_id == "scrape":
             scraper = Scrape()
             print(self.url)
             site = scraper.getSite(self.url)
             self.query_one("#doc-title").update(f"{site[0].title.text}")
             scraper.parseSite(site[0], site[1], self.doc_name, self.dest) if site != 1 else 0
+            self.notify("Website scraped and saved.", timeout=10)
 
     def compose(self) -> ComposeResult:
+        """Create child widgets of Info widget"""
         yield Label("Url: ")
         yield Label("", id="url-bar")
         yield Button("Scrape", id="scrape", variant="primary")
@@ -223,11 +234,13 @@ class Settings(Static):
         super().__init__()
 
     def on_directory_tree_directory_selected(self, event: DirectoryTree.DirectorySelected) -> None:
+        """Load selected directory into a variable"""
         #self.query_one(Label).update(f"{event.path}")
         #self.post_message(self.Dest_Update(f"{event.path}"))
         self.path = event.path
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
+        """"Event handler called when a button is pressed"""
         button_id = event.button.id
         if button_id == "set-dest":
             self.post_message(self.Dest_Update(f"{self.path}"))
@@ -245,7 +258,7 @@ class Settings(Static):
                 config.write(configfile)
 
     def compose(self) -> ComposeResult:
-        """Create child widgets of settings widget"""
+        """Create child widgets of Settings widget"""
         with Vertical(id="settings"):
             yield Button("Set Destination", id="set-dest", classes="settings-button")
             yield Button("Use Default", id="use-default", classes="settings-button")
@@ -255,7 +268,6 @@ class Settings(Static):
         yield DirectoryTreeSelect(id="directorySelect")
             #yield Label()
         
-
 class ScraperApp(App):
     """A Textual app to scrape online patterns/recipes"""
     
@@ -269,18 +281,27 @@ class ScraperApp(App):
             super().__init__()
 
     def on_input_site_input_update(self, event: Input_Site.Input_Update) -> None:
+        """Recieve url and doc_name from Input and pass it to Info"""
         self.query_one(Info).pass_update(new_url=event.url, new_doc_name=event.doc_name)
 
     def on_settings_dest_update(self, event: Settings.Dest_Update) -> None:
+        """Recieve destination from Settings and pass it to Info"""
         self.query_one(Info).pass_dest(new_dest=event.dest)
+        #self.notify("Test notif.", timeout=10)
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app"""
         yield Header()
         yield Footer()
-        yield Input_Site()
-        yield Info()
-        yield Settings()
+        input_site = Input_Site()
+        input_site.border_title = "Input"
+        yield input_site
+        info = Info()
+        info.border_title = "Info"
+        yield info
+        settings = Settings()
+        settings.border_title = "Settings"
+        yield settings
 
     def action_toggle_dark(self) -> None:
         """An action to toggle dark mode"""

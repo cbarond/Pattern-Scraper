@@ -5,34 +5,62 @@ Screen {
     grid-rows: 1fr 2fr;
 }
 
+Toast {
+    padding: 2;
+    border: white;
+}
+
 /* Input section */
 Input_Site {
     layout: grid;
     grid-size: 2 2;
-    grid-columns: 1fr 2fr;
+    grid-columns: 1fr 3fr;
     content-align: center middle;
-    margin: 1;
+    margin: 0;
     height: 10;
+    border: round green;
+    border-title-align: left;
 }
 
-#input-site {
-    column-span: 2;
-}
 
 #label1 {
-    text-align: center;
+    text-align: right;
     content-align: center middle;
-    padding: 1;
+    margin: 0;
+    width: 100%;
 }
+
+#label2 {
+    text-align: right;
+    content-align: center middle;
+    margin: 0;
+    width: 100%;
+}
+
+#url {
+    text-align: left;
+    content-align: center middle;
+    margin: 0;
+}
+
+#doc-name {
+    text-align: left;
+    content-align: center middle;
+    margin: 0;
+}
+
+
+
 
 /* Info Section */
 Info {
     layout: grid;
     grid-size: 3 4;
-    grid-columns: 1fr 2fr;
+    grid-columns: 1fr 4fr 1fr;
     margin: 0;
     padding: 1;
-    border: double violet;
+    border: round violet;
+    border-title-align: left;
 }
 
 #scrape {
@@ -45,6 +73,8 @@ Info {
 
 #doc-title {
     column-span: 3;
+    # border-top: solid cyan;
+    width: 100%;
 }
 
 Label {
@@ -55,10 +85,12 @@ Label {
 Settings {
     layout: grid;
     grid-size: 2 1;
-    margin: 1;
+    margin: 0;
     padding: 0;
     height: 1fr;
     min-width: 100;
+    border: round cyan;
+    border-title-align: left;
 }
 
 #settings {
@@ -97,4 +129,5 @@ Settings {
 
 #directorySelect {
     row-span: 1;
+    margin: 1;
 }
